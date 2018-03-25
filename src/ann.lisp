@@ -101,6 +101,7 @@
                                                          @meta.schema))))))
       (:= (? schema :name) @meta.schema
           @meta.schema schema)
+      (write-schema-stylesheet meta)
       meta))
   (defun clear-schema-cache ()
     "Clear schema cache."
