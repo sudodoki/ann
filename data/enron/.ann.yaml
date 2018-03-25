@@ -1,4 +1,4 @@
 format: bsf
 schema: ner
-highlight: color
+highlight: background
 ext: txt
