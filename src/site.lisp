@@ -117,7 +117,11 @@
   (if-it (probe-file (local-file "data" file))
          (if (uiop:directory-pathname-p it)
              (handle-/ :dir file)
-             (with (((raw meta anns) (read-file-with-anns file))
+             (with (((raw meta anns) (handler-case
+                                         (read-file-with-anns file)
+                                       (error (e)
+                                         (:= (htt:return-code*) htt:+http-not-implemented+)
+                                         (htt:abort-request-handler (fmt "Error reading annotations: ~A" e)))))
                     (all-files (list-ann-files file meta))
                     (file-pos (position file all-files :test 'string=)))
                (unless file-pos
