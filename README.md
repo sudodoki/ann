@@ -6,6 +6,7 @@
 
 The normal ANN run sequence may be found in `run.lisp`.
 It may be invoked either from the REPL or shell: e.g. `sbcl --load run.lisp`.
+If you want to run web app, be sure to add `:dev` into `*features*` like `rlwrap sbcl --eval "(push :dev *features*)" --load run.lisp` or in REPL.
 
 The documents for annotation should be put into the `data/` dir. Currently, a small portion of the Enron corpus is
 
@@ -18,6 +19,8 @@ New annotation schemes may be defined in `schemas/` dir. The default one is for 
 The annotation process is intuitive: just select the spans to annotate and choose the appropriate class. Incorrect annotations may be removed. All changes are persisted to disk in an `.ann` file alongside the text file at once.
 
 ![](doc/screen2.jpg)
+
+There's ability to setup basic auth for users, for that place `users.txt` with each line being `%username% %password%`
 
 ## License
 

@@ -54,13 +54,13 @@
                                  ,suffix)
                       "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;►&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"))))))))
 
-(url "/static/:file" (file)
+#+dev(url "/static/:file" (file)
   (htt:handle-static-file (local-file "site" file)))
 
 
 ;;; annotation
 
-(url "/" (dir)
+#+dev(url "/" (dir)
   (unless (or (null dir)
               (ends-with "/" dir))
     (:= dir (strcat dir "/")))
@@ -112,12 +112,16 @@
                                   @meta.ext))))
         'string<))
 
-(url "/ann/:file" (file)
+#+dev(url "/ann/:file" (file)
   (require-auth file)
   (if-it (probe-file (local-file "data" file))
          (if (uiop:directory-pathname-p it)
              (handle-/ :dir file)
-             (with (((raw meta anns) (read-file-with-anns file))
+             (with (((raw meta anns) (handler-case
+                                         (read-file-with-anns file)
+                                       (error (e)
+                                         (:= (htt:return-code*) htt:+http-not-implemented+)
+                                         (htt:abort-request-handler (fmt "Error reading annotations: ~A" e)))))
                     (all-files (list-ann-files file meta))
                     (file-pos (position file all-files :test 'string=)))
                (unless file-pos
@@ -169,7 +173,7 @@
          (htt:abort-request-handler
           (princ-to-string (:= (htt:return-code*) htt:+http-not-found+)))))
              
-(url "/post/:file" (file)
+#+dev(url "/post/:file" (file)
   (require-auth file)
   (when (eql :POST (mkeyw (htt:request-method*)))
     (with ((data (yason:parse (htt:raw-post-data :force-text t)))
@@ -280,7 +284,7 @@
                       (:button :type "submit" :style "font-size: large;"
                                "Record diff")))))))))
 
-(url "/diff/:ann1/:file/:ann2" (ann1 file ann2)
+#+dev(url "/diff/:ann1/:file/:ann2" (ann1 file ann2)
   (require-auth "admin")
   (with (((ann2 &optional ann3) (split #\/ ann2)))
     (if (and (probe-file (local-file "data" ann1 file))
@@ -426,7 +430,7 @@ AGREEMENT ~A-~A: ~$~%AGREEMENT ~A-~A: ~$~%AGREEMENT ~A-~A: ~$~%"
          (dolines (line users-file)
                   (with (((user pass) (split #\Space line :count 2)))
                         (:= (? users user) pass)))
-         (format *debug-io* "No users file at: ~A" users-file))
+         (format *debug-io* "No users file at: ~A – continuing without auth" users-file))
      users))
 
  (:= *users* (load-auth)))
