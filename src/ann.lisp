@@ -94,7 +94,7 @@
 
 (let ((schema-cache #h()))
   (defun read-meta (file)
-    "Reaa meta spec from FILE and the relevant schema from schemas/."
+    "Read meta spec from FILE and the relevant schema from schemas/."
     (with ((meta (yaml->struct (make-meta) file))
            (schema (getset# @meta.schema schema-cache
                             (yaml:parse (local-file (fmt "schemas/~(~A~).yaml"

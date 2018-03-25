@@ -10,7 +10,7 @@ If you want to run web app, be sure to add `:dev` into `*features*` like `rlwrap
 
 The documents for annotation should be put into the `data/` dir. Currently, a small portion of the Enron corpus is
 
-To select a particular annotation scheme the root folder of the texts to annotate should have a file `.ann.yaml` (similar in format to the [default one](schemas/ner.yaml)).
+To select a particular annotation scheme the root folder of the texts to annotate should have a file `.ann.yaml` (similar in format to the [default one](data/enron/.ann.yaml)).
 
 New annotation schemes may be defined in `schemas/` dir. The default one is for NER annotation.
 
