@@ -18,7 +18,7 @@
        (local-file "data" ".ann.yaml"))
     (let ((file (local-file dir ".ann.yaml")))
       (if-it (probe-file file)
-             file
+             (return file)
              (error "No meta file (.ann.yaml) - expected ~A" file)))))
 
 (defun read-file-with-anns (file)
