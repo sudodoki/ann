@@ -17,9 +17,10 @@
       ((null (find #\/ dir))
        (local-file "data" ".ann.yaml"))
     (let ((file (local-file dir ".ann.yaml")))
-      (when (probe-file file)
-        (return file)))))
-    
+      (if (probe-file file)
+             (return file)
+             (error "No meta file (.ann.yaml) - expected ~A" file)))))
+
 (defun read-file-with-anns (file)
   "Read and process anns from FILE."
   (with ((dir (slice file 0 (position #\/ file :from-end t)))
@@ -94,16 +95,14 @@
 (let ((schema-cache #h()))
   (defun read-meta (file)
     "Read meta spec from FILE and the relevant schema from schemas/."
-    (if (probe-file file)
-        (with ((meta (yaml->struct (make-meta) file))
-               (schema (getset# @meta.schema schema-cache
-                                (yaml:parse (local-file (fmt "schemas/~(~A~).yaml"
-                                                             @meta.schema))))))
-          (:= (? schema :name) @meta.schema
-              @meta.schema schema)
-          (write-schema-stylesheet meta)
-          meta)
-        (error "No meta file (.ann.yaml)")))
+    (with ((meta (yaml->struct (make-meta) file))
+           (schema (getset# @meta.schema schema-cache
+                            (yaml:parse (local-file (fmt "schemas/~(~A~).yaml"
+                                                         @meta.schema))))))
+      (:= (? schema :name) @meta.schema
+          @meta.schema schema)
+      (write-schema-stylesheet meta)
+      meta))
   (defun clear-schema-cache ()
     "Clear schema cache."
     (clrhash schema-cache)))
