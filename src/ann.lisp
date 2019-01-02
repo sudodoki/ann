@@ -5,7 +5,6 @@
 ;;; files
 
 (let ((base-dir (asdf:component-pathname (asdf:find-system :ann))))
-  (print base-dir)
   (defun local-file (&rest parts)
     "Compose PARTS into a pathname relevant to projects' base dir."
     (merge-pathnames (strjoin "/" parts)
@@ -22,7 +21,7 @@
       (let ((file (local-file dir ".ann.yaml")))
         (when (probe-file file)
           (return file))))
-    (error "No meta file (.ann.yaml) - expected ~A" file)))
+    (error "No meta file (.ann.yaml) - expected to be found in any dir starting from ~A" dir)))
 
 
 (defun read-file-with-anns (file)
