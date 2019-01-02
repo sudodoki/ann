@@ -13,15 +13,17 @@
 
 (defun find-meta-file (dir)
   "Find .ann.yaml file in local DIR."
-  (progn
-    (do ((dir (strcat "data/" dir)
-              (slice dir 0 (position #\/ dir :from-end t))))
-        ((null (find #\/ dir))
-         (local-file "data" ".ann.yaml"))
-      (let ((file (local-file dir ".ann.yaml")))
-        (when (probe-file file)
-          (return file))))
-    (error "No meta file (.ann.yaml) - expected to be found in any dir starting from ~A" dir)))
+  (let
+      ((initial-dir (strcat "data/" dir)))
+    (if-it
+     (do ((dir initial-dir
+               (slice dir 0 (or (position #\/ dir :from-end t) 0))))
+         ((string= "" dir))
+       (let ((file (local-file dir ".ann.yaml")))
+         (when (probe-file file)
+           (return file))))
+     it
+     (error "No meta file (.ann.yaml) - expected to be found in any dir starting from ~A" initial-dir))))
 
 
 (defun read-file-with-anns (file)
