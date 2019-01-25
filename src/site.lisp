@@ -165,14 +165,14 @@
                   (:tr
                    (:td
                     (:div :id "txt-data"
-                          :contenteditable t :onmouseup "ann_dialog()"
+                          :onmouseup "ann_dialog()"
                           (who:str (anned-text raw anns))))
                    (:td
                     (:div :id "ann-data"
                           (who:str (ann-htm meta anns)))))))))
          (htt:abort-request-handler
           (princ-to-string (:= (htt:return-code*) htt:+http-not-found+)))))
-             
+
 #+dev(url "/post/:file" (file)
   (require-auth file)
   (when (eql :POST (mkeyw (htt:request-method*)))
